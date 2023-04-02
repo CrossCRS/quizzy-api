@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizzyAPI.Data;
-using QuizzyAPI.Entities;
 using QuizzyAPI.Models;
 
 namespace QuizzyAPI.Controllers;
@@ -20,12 +19,26 @@ public class QuizController : ControllerBase {
 
     // GET: api/quizzes
     [HttpGet]
-    public async Task<ActionResult<ICollection<Quiz>>> GetQuizzes() {
+    public async Task<ActionResult<ICollection<QuizBriefDto>>> GetQuizzes() {
         var quizzes = await _context.Quizzes
-            //.Include(q => q.Questions) // Show only in a single quiz endpoint
-            //.ThenInclude(question => question.Answers)
             .OrderBy(q => q.Id)
             .ToListAsync();
         return Ok(_mapper.Map<ICollection<QuizBriefDto>>(quizzes));
+    }
+    
+    // GET: api/quizzes/1
+    [HttpGet("{id}")]
+    public async Task<ActionResult<QuizFullDto>> GetQuiz(int id) {
+        var quiz = await _context.Quizzes
+            .Include(q => q.Questions)
+            .ThenInclude(q => q.Answers)
+            .Where(q => q.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (quiz == null) {
+            return NotFound();
+        }
+
+        return Ok(_mapper.Map<QuizFullDto>(quiz));
     }
 }

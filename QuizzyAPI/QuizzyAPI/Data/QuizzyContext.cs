@@ -23,8 +23,11 @@ public class QuizzyContext : DbContext {
         modelBuilder.Entity<Quiz>().HasData(
             new Quiz() {
                 Id = 1, Title = "Test Quiz", Description = "A test quiz", HideAnswers = false
+            },
+            new Quiz() {
+                Id = 2, Title = "Test Quiz No Answers", Description = "A test quiz with hidden answers", HideAnswers = true
             });
-
+        
         modelBuilder.Entity<Question>().HasData(
             new Question() {
                 Id = 1, QuizId = 1, Text = "Question number 1", Points = 1,
@@ -34,6 +37,9 @@ public class QuizzyContext : DbContext {
             },
             new Question() {
                 Id = 3, QuizId = 1, Text = "Question number 3", Points = 1,
+            },
+            new Question() {
+                Id = 4, QuizId = 2, Text = "Quiz 2 Question", Points = 1,
             });
 
         modelBuilder.Entity<Answer>().HasData(
@@ -74,6 +80,13 @@ public class QuizzyContext : DbContext {
             },
             new Answer() {
                 Id = 12, QuestionId = 3, Text = "Incorrect answer 3", IsCorrect = false
+            },
+            
+            new Answer() {
+                Id = 13, QuestionId = 4, Text = "Incorrect answer", IsCorrect = false
+            },
+            new Answer() {
+                Id = 14, QuestionId = 4, Text = "Correct answer", IsCorrect = true
             });
 
         base.OnModelCreating(modelBuilder);

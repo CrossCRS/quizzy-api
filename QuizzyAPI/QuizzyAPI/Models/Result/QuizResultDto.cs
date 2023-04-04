@@ -6,8 +6,8 @@ public class QuizResultDto {
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     
-    public int PointsScores { get; set; }
+    public int PointsScored { get; set; }
     public int PointsMax { get; set; }
 
-    public IEnumerable<QuestionResultDto> Questions { get; set; } = null!;
+    public ICollection<QuestionResultDto> Questions { get; set; } = null!;
 }

@@ -26,7 +26,7 @@ public class QuizController : ControllerBase {
     }
     
     // GET: api/quizzes/1
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<QuizFullDto>> GetQuiz(int id) {
         var quiz = await _quizzes.GetById(id);
 
@@ -39,8 +39,9 @@ public class QuizController : ControllerBase {
     
     // PUT api/quizzes/1/result
     // Send answers and get a result
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<ActionResult<QuizResultDto>> GetResults(int id, AnswersRequestDto answers) {
-        return Ok(null);
+        var results = await _quizzes.GetResults(id, answers);
+        return Ok(results);
     }
 }

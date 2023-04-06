@@ -5,6 +5,18 @@ using QuizzyAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Enable CORS in development
+if (builder.Environment.IsDevelopment())  {
+    builder.Services.AddCors(options => {
+        options.AddDefaultPolicy(
+            policy => {
+                policy.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
+}
+
 // Add services to the container.
 builder.Services.AddDbContext<QuizzyContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("QuizzyContextPG"));
@@ -34,6 +46,7 @@ using (var scope = app.Services.CreateScope()) {
     context.Database.EnsureCreated();
 }
 
+app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

@@ -7,4 +7,5 @@ public class QuizFullDto {
     public string Description { get; set; } = string.Empty;
 
     public IEnumerable<QuestionDto> Questions { get; set; } = null!;
+    public int QuestionsCount { get; set; }
 }

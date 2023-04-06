@@ -23,6 +23,7 @@ public class QuizRepository : IQuizRepository {
 
     public async Task<IEnumerable<Quiz>> GetAll() {
         return await _context.Quizzes
+            .Include(q => q.Questions)
             .OrderBy(q => q.Id)
             .ToListAsync();
     }

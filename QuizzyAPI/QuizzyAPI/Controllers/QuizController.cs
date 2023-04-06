@@ -39,7 +39,7 @@ public class QuizController : ControllerBase {
     
     // PUT api/quizzes/1/result
     // Send answers and get a result
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:int}/result")]
     public async Task<ActionResult<QuizResultDto>> GetResults(int id, AnswersRequestDto answers) {
         var results = await _quizzes.GetResults(id, answers);
         return Ok(results);

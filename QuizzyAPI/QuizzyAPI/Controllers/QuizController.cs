@@ -35,13 +35,16 @@ public class QuizController : ControllerBase {
 
         var pageCount = (int)Math.Ceiling((double)quizzesCount / (double)pageSize);
 
-        var prevUrl = pageIndex == 0
-            ? null
-            : Url.Link("GetQuizzes", new { pageIndex = pageIndex - 1, pageSize = pageSize });
+        // TODO: Fix URLs when running in docker
+        // var prevUrl = pageIndex == 0
+        //     ? null
+        //     : Url.Link("GetQuizzes", new { pageIndex = pageIndex - 1, pageSize = pageSize });
         
-        var nextUrl = pageIndex == pageCount - 1
-            ? null
-            : Url.Link("GetQuizzes", new { pageIndex = pageIndex + 1, pageSize = pageSize });
+        // var nextUrl = pageIndex == pageCount - 1
+        //     ? null
+        //     : Url.Link("GetQuizzes", new { pageIndex = pageIndex + 1, pageSize = pageSize });
+        string? prevUrl = null;
+        string? nextUrl = null;
 
         var response = new PaginatedDto<QuizBriefDto>(pageIndex, pageSize, pageCount, quizzesCount,
             _mapper.Map<ICollection<QuizBriefDto>>(quizzes), prevUrl, nextUrl);

@@ -21,11 +21,18 @@ public class QuizRepository : IQuizRepository {
             .FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Quiz>> GetAll() {
+    public async Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize) {
         return await _context.Quizzes
             .Include(q => q.Questions)
             .OrderBy(q => q.Id)
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+    }
+
+    public async Task<long> GetCount() {
+        return await _context.Quizzes
+            .LongCountAsync();
     }
 
     public async Task<QuizResultDto?> GetResults(int id, AnswersRequestDto request) {

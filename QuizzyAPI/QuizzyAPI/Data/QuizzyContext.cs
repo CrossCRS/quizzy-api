@@ -27,6 +27,13 @@ public class QuizzyContext : DbContext {
             new Quiz() {
                 Id = 2, Title = "Test Quiz No Answers", Description = "A test quiz with hidden answers", HideAnswers = true
             });
+
+        for (var i = 3; i < 53; i++) {
+            modelBuilder.Entity<Quiz>().HasData(
+                new Quiz() {
+                    Id = i, Title = $"Empty Quiz #{i - 2}", Description = "An empty quiz", HideAnswers = false
+                });
+        }
         
         modelBuilder.Entity<Question>().HasData(
             new Question() {

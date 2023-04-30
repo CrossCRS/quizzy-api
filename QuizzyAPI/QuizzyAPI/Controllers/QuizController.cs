@@ -22,12 +22,16 @@ public class QuizController : ControllerBase {
     // GET: api/quizzes
     [HttpGet(Name = "GetQuizzes")]
     public async Task<ActionResult<PaginatedDto<QuizBriefDto>>> GetQuizzes([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10) {
+        if (pageIndex < 0) {
+            return BadRequest("pageIndex cannot be negative");
+        }
+        
+        if (pageSize > MaxPageSize) {
+            return BadRequest($"pageSize cannot be greater than {MaxPageSize}");
+        }
+        
         var quizzes = await _quizzes.GetAll(pageIndex, pageSize);
         var quizzesCount = await _quizzes.GetCount();
-
-        if (pageSize > MaxPageSize) {
-            pageSize = MaxPageSize;
-        }
 
         var pageCount = (int)Math.Ceiling((double)quizzesCount / (double)pageSize);
 

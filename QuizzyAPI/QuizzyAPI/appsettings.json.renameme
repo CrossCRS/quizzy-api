@@ -1,0 +1,12 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "QuizzyContextPG": "Host=changeme;Database=changeme;Username=changeme;Password=changeme"
+  },
+  "AllowedHosts": "*"
+}

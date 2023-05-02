@@ -8,5 +8,8 @@
   "ConnectionStrings": {
     "QuizzyContextPG": "Host=changeme;Database=changeme;Username=changeme;Password=changeme"
   },
+  "JWT": {
+    "Secret": "changeme"
+  },
   "AllowedHosts": "*"
 }

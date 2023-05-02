@@ -1,6 +1,11 @@
+using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using QuizzyAPI.Data;
+using QuizzyAPI.Identity;
 using QuizzyAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +26,26 @@ if (builder.Environment.IsDevelopment())  {
 builder.Services.AddDbContext<QuizzyContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("QuizzyContextPG"));
 });
+
+// Setup Identity
+builder.Services.AddIdentity<QuizzyUser, QuizzyRole>()
+    .AddEntityFrameworkStores<QuizzyContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options => {
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters() {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
+
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers()
     .AddJsonOptions(o => { o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
@@ -49,6 +74,7 @@ using (var scope = app.Services.CreateScope()) {
 app.UseCors();
 //app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseAuthentication();
 app.MapControllers();
 
 app.Run();

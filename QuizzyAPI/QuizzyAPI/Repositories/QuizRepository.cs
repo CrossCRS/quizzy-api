@@ -65,6 +65,10 @@ public class QuizRepository : IQuizRepository {
                 
                 // Answers
                 foreach (var answer in question.Answers) {
+                    if (!request.Answers.ContainsKey(question.Id.ToString())) {
+                        return null;
+                    }
+
                     var answerResultDto = new AnswerResultDto {
                         Id = answer.Id,
                         Text = answer.Text,

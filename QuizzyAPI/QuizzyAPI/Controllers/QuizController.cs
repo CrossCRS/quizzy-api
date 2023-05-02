@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizzyAPI.Models;
 using QuizzyAPI.Models.Result;
 using QuizzyAPI.Repositories;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuizzyAPI.Controllers;
 
@@ -21,15 +22,7 @@ public class QuizController : ControllerBase {
 
     // GET: api/quizzes
     [HttpGet(Name = "GetQuizzes")]
-    public async Task<ActionResult<PaginatedDto<QuizBriefDto>>> GetQuizzes([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10) {
-        if (pageIndex < 0) {
-            return BadRequest("pageIndex cannot be negative");
-        }
-        
-        if (pageSize > MaxPageSize) {
-            return BadRequest($"pageSize cannot be greater than {MaxPageSize}");
-        }
-        
+    public async Task<ActionResult<PaginatedDto<QuizBriefDto>>> GetQuizzes([FromQuery, Range(0, int.MaxValue)] int pageIndex = 0, [FromQuery, Range(1, MaxPageSize)] int pageSize = 10) {       
         var quizzes = await _quizzes.GetAll(pageIndex, pageSize);
         var quizzesCount = await _quizzes.GetCount();
 
@@ -54,7 +47,7 @@ public class QuizController : ControllerBase {
     
     // GET: api/quizzes/1
     [HttpGet("{id:int}", Name = "GetQuiz")]
-    public async Task<ActionResult<QuizFullDto>> GetQuiz(int id) {
+    public async Task<ActionResult<QuizFullDto>> GetQuiz([Range(1, int.MaxValue)] int id) {
         var quiz = await _quizzes.GetById(id);
 
         if (quiz == null) {
@@ -67,8 +60,25 @@ public class QuizController : ControllerBase {
     // PUT api/quizzes/1/result
     // Send answers and get a result
     [HttpPut("{id:int}/result", Name = "GetResults")]
-    public async Task<ActionResult<QuizResultDto>> GetResults(int id, AnswersRequestDto answers) {
+    public async Task<ActionResult<QuizResultDto>> GetResults([Range(1, int.MaxValue)] int id, AnswersRequestDto answers) {
+        var quiz = await _quizzes.GetById(id);
+
+        if (quiz == null) {
+            return NotFound();
+        }
+
+        var answersCount = answers.Answers.Count;
+        var expectedAnswersCount = quiz.Questions.Count();
+        if (answersCount != expectedAnswersCount) {
+            return BadRequest($"Invalid request. Expected {expectedAnswersCount} answers, found {answersCount}");
+        }
+
         var results = await _quizzes.GetResults(id, answers);
+
+        if (results == null) {
+            return BadRequest("Invalid request.");
+        }
+
         return Ok(results);
     }
 }

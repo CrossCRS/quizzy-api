@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizzyAPI.Models;
 using QuizzyAPI.Models.Result;
 using QuizzyAPI.Repositories;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuizzyAPI.Controllers;
 

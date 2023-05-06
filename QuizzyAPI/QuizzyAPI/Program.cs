@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using QuizzyAPI.Data;
 using QuizzyAPI.Identity;
 using QuizzyAPI.Repositories;
@@ -11,14 +12,13 @@ using QuizzyAPI.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Enable CORS in development
-if (builder.Environment.IsDevelopment())  {
+if (builder.Environment.IsDevelopment()) {
     builder.Services.AddCors(options => {
-        options.AddDefaultPolicy(
-            policy => {
-                policy.AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-            });
+        options.AddDefaultPolicy(policy => {
+            policy.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
     });
 }
 
@@ -40,18 +40,29 @@ builder.Services.AddAuthentication(options => {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters() {
-        ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateIssuer = false,
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = false,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
     };
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers()
-    .AddJsonOptions(o => { o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; 
+    });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => {
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+});
 builder.Services.AddTransient<IQuizRepository, QuizRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
@@ -74,7 +85,6 @@ using (var scope = app.Services.CreateScope()) {
 app.UseCors();
 //app.UseHttpsRedirection();
 app.UseAuthorization();
-app.UseAuthentication();
 app.MapControllers();
 
 app.Run();

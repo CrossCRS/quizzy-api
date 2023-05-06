@@ -44,6 +44,7 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
                 Email = "tester@example.com",
                 NormalizedEmail = "TESTER@EXAMPLE.COM",
                 PasswordHash = hasher.HashPassword(null, "P@ssw0rd"),
+                SecurityStamp = new Guid().ToString(),
             });
 
         modelBuilder.Entity<IdentityUserRole<int>>().HasData(

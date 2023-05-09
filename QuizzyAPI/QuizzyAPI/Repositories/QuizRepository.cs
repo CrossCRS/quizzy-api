@@ -32,8 +32,25 @@ public class QuizRepository : IQuizRepository {
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Quiz>> GetAllByAuthorId(int authorId, int pageIndex, int pageSize) {
+        return await _context.Quizzes
+            .Where(q => q.AuthorId == authorId)
+            .Include(q => q.Author)
+            .Include(q => q.Questions)
+            .OrderBy(q => q.Id)
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
     public async Task<long> GetCount() {
         return await _context.Quizzes
+            .LongCountAsync();
+    }
+
+    public async Task<long> GetCountByAuthorId(int authorId) {
+        return await _context.Quizzes
+            .Where(q => q.AuthorId == authorId)
             .LongCountAsync();
     }
 

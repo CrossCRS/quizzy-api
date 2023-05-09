@@ -6,10 +6,8 @@ namespace QuizzyAPI.Repositories;
 
 public interface IQuizRepository {
     Task<Quiz?> GetById(int id);
-    Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize);
-    Task<IEnumerable<Quiz>> GetAllByAuthorId(int authorId, int pageIndex, int pageSize);
-    Task<long> GetCount();
-    Task<long> GetCountByAuthorId(int authorId);
+    Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize, int? authorId = null);
+    Task<long> GetCount(int? authorId = null);
 
     Task<QuizResultDto?> GetResults(int id, AnswersRequestDto answers);
 }

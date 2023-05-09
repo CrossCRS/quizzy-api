@@ -22,36 +22,31 @@ public class QuizRepository : IQuizRepository {
             .FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize) {
-        return await _context.Quizzes
+    public async Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize, int? authorId = null) {
+        IQueryable<Quiz> query = _context.Quizzes;
+
+        if (authorId != null) {
+            query = query.Where(q => q.AuthorId == authorId);
+        }
+
+        query = query
             .Include(q => q.Author)
             .Include(q => q.Questions)
             .OrderBy(q => q.Id)
             .Skip(pageIndex * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+            .Take(pageSize);
+
+        return await query.ToListAsync();
     }
 
-    public async Task<IEnumerable<Quiz>> GetAllByAuthorId(int authorId, int pageIndex, int pageSize) {
-        return await _context.Quizzes
-            .Where(q => q.AuthorId == authorId)
-            .Include(q => q.Author)
-            .Include(q => q.Questions)
-            .OrderBy(q => q.Id)
-            .Skip(pageIndex * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-    }
+    public async Task<long> GetCount(int? authorId = null) {
+        IQueryable<Quiz> query = _context.Quizzes;
 
-    public async Task<long> GetCount() {
-        return await _context.Quizzes
-            .LongCountAsync();
-    }
+        if (authorId != null) {
+            query = query.Where(q => q.AuthorId == authorId);
+        }
 
-    public async Task<long> GetCountByAuthorId(int authorId) {
-        return await _context.Quizzes
-            .Where(q => q.AuthorId == authorId)
-            .LongCountAsync();
+        return await query.LongCountAsync();
     }
 
     public async Task<QuizResultDto?> GetResults(int id, AnswersRequestDto request) {

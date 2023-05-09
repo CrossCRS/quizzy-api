@@ -23,18 +23,10 @@ public class QuizController : ControllerBase {
 
     // GET: api/quizzes
     [HttpGet(Name = "GetQuizzes")]
-    public async Task<ActionResult<PaginatedDto<QuizBriefDto>>> GetQuizzes([FromQuery, Range(0, int.MaxValue)] int pageIndex = 0, [FromQuery, Range(1, MaxPageSize)] int pageSize = 10, [FromQuery, Range(1, int.MaxValue)] int authorId = 0) {
-        IEnumerable<Quiz> quizzes;
-        long quizzesCount = 0;
-        
-        if (authorId == 0) {
-            quizzes = await _quizzes.GetAll(pageIndex, pageSize);
-            quizzesCount = await _quizzes.GetCount();
-        } else {
-            quizzes = await _quizzes.GetAllByAuthorId(authorId, pageIndex, pageSize);
-            quizzesCount = await _quizzes.GetCountByAuthorId(authorId);
-        }
-        
+    public async Task<ActionResult<PaginatedDto<QuizBriefDto>>> GetQuizzes([FromQuery, Range(0, int.MaxValue)] int pageIndex = 0, [FromQuery, Range(1, MaxPageSize)] int pageSize = 10, [FromQuery, Range(1, int.MaxValue)] int? authorId = null) {
+        var quizzes = await _quizzes.GetAll(pageIndex, pageSize, authorId);
+        var quizzesCount = await _quizzes.GetCount(authorId);
+
         var pageCount = (int)Math.Ceiling((double)quizzesCount / (double)pageSize);
 
         // TODO: Fix URLs when running in docker

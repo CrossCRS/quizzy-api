@@ -64,16 +64,16 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
 
         modelBuilder.Entity<Quiz>().HasData(
             new Quiz() {
-                Id = 1, Title = "Test Quiz", Description = "A test quiz", HideAnswers = false
+                Id = 1, Title = "Test Quiz", Description = "A test quiz", AuthorId = 1, HideAnswers = false
             },
             new Quiz() {
-                Id = 2, Title = "Test Quiz No Answers", Description = "A test quiz with hidden answers", HideAnswers = true
+                Id = 2, Title = "Test Quiz No Answers", Description = "A test quiz with hidden answers", AuthorId = 1, HideAnswers = true
             });
 
         for (var i = 3; i < 53; i++) {
             modelBuilder.Entity<Quiz>().HasData(
                 new Quiz() {
-                    Id = i, Title = $"Empty Quiz #{i - 2}", Description = "An empty quiz", HideAnswers = false
+                    Id = i, Title = $"Empty Quiz #{i - 2}", Description = "An empty quiz", AuthorId = 1, HideAnswers = false
                 });
         }
         

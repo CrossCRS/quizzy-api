@@ -1,4 +1,5 @@
 using AutoMapper;
+using QuizzyAPI.Identity;
 
 namespace QuizzyAPI.Profiles; 
 
@@ -10,5 +11,7 @@ public class QuizProfile : Profile {
         CreateMap<Entities.Question, Models.QuestionDto>();
 
         CreateMap<Entities.Answer, Models.AnswerDto>();
+
+        CreateMap<QuizzyUser, Models.AuthorDto>();
     }
 }

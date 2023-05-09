@@ -15,6 +15,7 @@ public class QuizRepository : IQuizRepository {
 
     public async Task<Quiz?> GetById(int id) {
         return await _context.Quizzes
+            .Include(q => q.Author)
             .Include(q => q.Questions)
             .ThenInclude(q => q.Answers)
             .Where(q => q.Id == id)
@@ -23,6 +24,7 @@ public class QuizRepository : IQuizRepository {
 
     public async Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize) {
         return await _context.Quizzes
+            .Include(q => q.Author)
             .Include(q => q.Questions)
             .OrderBy(q => q.Id)
             .Skip(pageIndex * pageSize)

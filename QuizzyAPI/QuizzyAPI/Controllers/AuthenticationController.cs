@@ -40,7 +40,7 @@ public class AuthenticationController : ControllerBase {
     }
 
     // GET: api/auth/roles
-    //[Authorize(Roles = Constants.Roles.ADMINISTRATOR)] // TODO: Uncomment later :)
+    [Authorize(Roles = Constants.Roles.ADMINISTRATOR)]
     [HttpGet("roles", Name = "GetRoles")]
     public async Task<ActionResult<IEnumerable<QuizzyRole>>> GetRoles() {
         var response = await _roleManager.Roles.ToListAsync();
@@ -49,8 +49,7 @@ public class AuthenticationController : ControllerBase {
     }
 
     // GET: api/auth/users
-    //[Authorize(Roles = Constants.Roles.ADMINISTRATOR)]
-    [Authorize]
+    [Authorize(Roles = Constants.Roles.ADMINISTRATOR)]
     [HttpGet("users", Name = "GetUsers")]
     public async Task<ActionResult<IEnumerable<QuizzyUser>>> GetUsers() {
         var response = await _userManager.Users.ToListAsync();

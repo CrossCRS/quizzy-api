@@ -5,6 +5,7 @@
       "Microsoft.AspNetCore": "Warning"
     }
   },
+  "AdminPassword": "changeme",
   "ConnectionStrings": {
     "QuizzyContextPG": "Host=changeme;Database=changeme;Username=changeme;Password=changeme"
   },

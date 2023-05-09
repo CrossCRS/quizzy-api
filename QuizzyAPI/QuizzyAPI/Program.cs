@@ -80,6 +80,23 @@ using (var scope = app.Services.CreateScope()) {
     var context = services.GetRequiredService<QuizzyContext>();
     context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
+
+    // Create an administrator account
+    var userManager = services.GetRequiredService<UserManager<QuizzyUser>>();
+    var password = builder.Configuration["AdminPassword"];
+
+    if (password == null) {
+        Console.WriteLine("AdminPassword is not set in configuration, not creating administrator account!");
+    }
+
+    await userManager.CreateAsync(new QuizzyUser() {
+        UserName = "Admin",
+        Email = "admin@example.com"
+    }, password!);
+
+    var user = await userManager.FindByNameAsync("Admin");
+
+    await userManager.AddToRoleAsync(user, Constants.Roles.ADMINISTRATOR);
 }
 
 app.UseCors();

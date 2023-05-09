@@ -1,16 +1,59 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using QuizzyAPI.Entities;
+using QuizzyAPI.Identity;
 
-namespace QuizzyAPI.Data; 
+namespace QuizzyAPI.Data;
 
-public class QuizzyContext : DbContext {
+public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
     public DbSet<Quiz> Quizzes { get; set; } = null!;
     public DbSet<Question> Questions { get; set; } = null!;
     public DbSet<Answer> Answers { get; set; } = null!;
 
-    public QuizzyContext(DbContextOptions options) : base(options) {}
+    public QuizzyContext(DbContextOptions<QuizzyContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        // Setup Identity test data
+        var hasher = new PasswordHasher<QuizzyUser>();
+
+        // Roles
+        modelBuilder.Entity<QuizzyRole>().HasData(
+            new QuizzyRole {
+                Id = 1,
+                Name = Constants.Roles.ADMINISTRATOR,
+                NormalizedName = Constants.Roles.ADMINISTRATOR.ToUpper()
+            },
+            new QuizzyRole {
+                Id = 2,
+                Name = Constants.Roles.USER,
+                NormalizedName = Constants.Roles.USER.ToUpper()
+            },
+            new QuizzyRole {
+                Id = 3,
+                Name = Constants.Roles.DEMO,
+                NormalizedName = Constants.Roles.DEMO.ToUpper()
+            });
+
+        // Users
+        modelBuilder.Entity<QuizzyUser>().HasData(
+            new QuizzyUser {
+                Id = 1,
+                UserName = "Tester",
+                NormalizedUserName = "TESTER",
+                Email = "tester@example.com",
+                NormalizedEmail = "TESTER@EXAMPLE.COM",
+                PasswordHash = hasher.HashPassword(null, "P@ssw0rd"),
+                SecurityStamp = new Guid().ToString(),
+            });
+
+        modelBuilder.Entity<IdentityUserRole<int>>().HasData(
+            new IdentityUserRole<int> {
+                RoleId = 3,
+                UserId = 1
+            });
+
+        // Setup Quizzy test data
         modelBuilder.Entity<Quiz>()
             .Property(q => q.HideAnswers)
             .HasDefaultValue(false);
@@ -19,7 +62,6 @@ public class QuizzyContext : DbContext {
             .Property(q => q.Points)
             .HasDefaultValue(1);
 
-        // Setup test data
         modelBuilder.Entity<Quiz>().HasData(
             new Quiz() {
                 Id = 1, Title = "Test Quiz", Description = "A test quiz", HideAnswers = false

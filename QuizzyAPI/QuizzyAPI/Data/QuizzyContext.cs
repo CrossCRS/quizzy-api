@@ -45,19 +45,32 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
                 NormalizedEmail = "TESTER@EXAMPLE.COM",
                 PasswordHash = hasher.HashPassword(null, "P@ssw0rd"),
                 SecurityStamp = new Guid().ToString(),
+            },
+            new QuizzyUser {
+                Id = 2,
+                UserName = "AnotherTester",
+                NormalizedUserName = "ANOTHERTESTER",
+                Email = "anothertester@example.com",
+                NormalizedEmail = "ANOTHERTESTER@EXAMPLE.COM",
+                PasswordHash = hasher.HashPassword(null, "P@ssw0rd"),
+                SecurityStamp = new Guid().ToString(),
             });
 
         modelBuilder.Entity<IdentityUserRole<int>>().HasData(
             new IdentityUserRole<int> {
                 RoleId = 3,
                 UserId = 1
+            },
+            new IdentityUserRole<int> {
+                RoleId = 3,
+                UserId = 2
             });
 
         // Setup Quizzy test data
         modelBuilder.Entity<Quiz>()
             .Property(q => q.HideAnswers)
             .HasDefaultValue(false);
-        
+
         modelBuilder.Entity<Question>()
             .Property(q => q.Points)
             .HasDefaultValue(1);
@@ -73,10 +86,10 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
         for (var i = 3; i < 53; i++) {
             modelBuilder.Entity<Quiz>().HasData(
                 new Quiz() {
-                    Id = i, Title = $"Empty Quiz #{i - 2}", Description = "An empty quiz", AuthorId = 1, HideAnswers = false
+                    Id = i, Title = $"Empty Quiz #{i - 2}", Description = "An empty quiz", AuthorId = 2, HideAnswers = false
                 });
         }
-        
+
         modelBuilder.Entity<Question>().HasData(
             new Question() {
                 Id = 1, QuizId = 1, Text = "Question number 1", Points = 1,
@@ -104,7 +117,7 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
             new Answer() {
                 Id = 4, QuestionId = 1, Text = "Correct answer", IsCorrect = true
             },
-            
+
             new Answer() {
                 Id = 5, QuestionId = 2, Text = "Incorrect answer 1", IsCorrect = false
             },
@@ -117,7 +130,7 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
             new Answer() {
                 Id = 8, QuestionId = 2, Text = "Incorrect answer 3", IsCorrect = false
             },
-            
+
             new Answer() {
                 Id = 9, QuestionId = 3, Text = "Correct answer", IsCorrect = true
             },
@@ -130,7 +143,7 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
             new Answer() {
                 Id = 12, QuestionId = 3, Text = "Incorrect answer 3", IsCorrect = false
             },
-            
+
             new Answer() {
                 Id = 13, QuestionId = 4, Text = "Incorrect answer", IsCorrect = false
             },

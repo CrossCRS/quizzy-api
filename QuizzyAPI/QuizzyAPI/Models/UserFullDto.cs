@@ -1,6 +1,8 @@
 namespace QuizzyAPI.Models;
 
-public class AuthorDto {
+public class UserFullDto {
     public int Id { get; set; }
     public string Username { get; set; } = string.Empty;
+    
+    public long CreatedQuizzesCount { get; set; }
 }

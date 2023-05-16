@@ -12,6 +12,7 @@ public class QuizProfile : Profile {
 
         CreateMap<Entities.Answer, Models.AnswerDto>();
 
-        CreateMap<QuizzyUser, Models.AuthorDto>();
+        CreateMap<QuizzyUser, Models.UserBriefDto>();
+        CreateMap<QuizzyUser, Models.UserFullDto>();
     }
 }

@@ -35,7 +35,7 @@ public class UserController : ControllerBase {
 
         var userDto = _mapper.Map<UserFullDto>(user);
         // TODO: AutoMapper for quiz counts
-        userDto.CreatedQuizzesCount = await _quizRepository.GetCountByAuthorId(user.Id);
+        userDto.CreatedQuizzesCount = await _quizRepository.GetCount(user.Id);
 
         return Ok(userDto);
     }

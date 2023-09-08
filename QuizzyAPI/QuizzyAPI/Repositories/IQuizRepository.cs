@@ -9,5 +9,7 @@ public interface IQuizRepository {
     Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize, int? authorId = null);
     Task<long> GetCount(int? authorId = null);
 
+    Task<bool> DeleteQuiz(int id);
+
     Task<QuizResultDto?> GetResults(int id, AnswersRequestDto answers);
 }

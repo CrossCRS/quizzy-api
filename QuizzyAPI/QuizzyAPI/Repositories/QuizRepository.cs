@@ -49,6 +49,21 @@ public class QuizRepository : IQuizRepository {
         return await query.LongCountAsync();
     }
 
+    public async Task<bool> DeleteQuiz(int id) {
+        var quiz = await _context.Quizzes
+            .Where(q => q.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (quiz == null) {
+            return false;
+        }
+
+        _context.Quizzes.Remove(quiz);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
     public async Task<QuizResultDto?> GetResults(int id, AnswersRequestDto request) {
         var quiz = await GetById(id);
 

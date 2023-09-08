@@ -4,7 +4,8 @@ using QuizzyAPI.Models;
 using QuizzyAPI.Models.Result;
 using QuizzyAPI.Repositories;
 using System.ComponentModel.DataAnnotations;
-using QuizzyAPI.Entities;
+using Microsoft.AspNetCore.Authorization;
+using QuizzyAPI.Identity;
 
 namespace QuizzyAPI.Controllers;
 
@@ -46,7 +47,7 @@ public class QuizController : ControllerBase {
         return Ok(response);
     }
     
-    // GET: api/quizzes/1
+    // GET: api/quizzes/{id}
     [HttpGet("{id:int}", Name = "GetQuiz")]
     public async Task<ActionResult<QuizFullDto>> GetQuiz([Range(1, int.MaxValue)] int id) {
         var quiz = await _quizzes.GetById(id);
@@ -58,7 +59,18 @@ public class QuizController : ControllerBase {
         return Ok(_mapper.Map<QuizFullDto>(quiz));
     }
     
-    // PUT api/quizzes/1/result
+    // DELETE: api/quizzes/{id}
+    [HttpDelete("{id:int}", Name = "DeleteQuiz")]
+    [Authorize(Roles = Constants.Roles.ADMINISTRATOR)]
+    public async Task<ActionResult<bool>> DeleteQuiz([Range(1, int.MaxValue)] int id) {
+        // TODO: If Administrator OR owner
+        var result = await _quizzes.DeleteQuiz(id);
+
+        // TODO: Pretty message
+        return result;
+    }
+    
+    // PUT api/quizzes/{id}/result
     // Send answers and get a result
     [HttpPut("{id:int}/result", Name = "GetResults")]
     public async Task<ActionResult<QuizResultDto>> GetResults([Range(1, int.MaxValue)] int id, AnswersRequestDto answers) {

@@ -22,7 +22,7 @@ public class QuizRepository : IQuizRepository {
             .FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize, int? authorId = null) {
+    public async Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize, Guid? authorId = null) {
         IQueryable<Quiz> query = _context.Quizzes;
 
         if (authorId != null) {
@@ -39,7 +39,7 @@ public class QuizRepository : IQuizRepository {
         return await query.ToListAsync();
     }
 
-    public async Task<long> GetCount(int? authorId = null) {
+    public async Task<long> GetCount(Guid? authorId = null) {
         IQueryable<Quiz> query = _context.Quizzes;
 
         if (authorId != null) {

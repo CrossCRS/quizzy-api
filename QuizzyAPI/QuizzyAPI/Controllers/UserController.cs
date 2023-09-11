@@ -24,8 +24,8 @@ public class UserController : ControllerBase {
     }
     
     // GET: api/users/{id}
-    [HttpGet("{id:int}", Name = "GetUser")]
-    public async Task<ActionResult<UserFullDto>> GetUser([Range(1, int.MaxValue)] int id) {
+    [HttpGet("{id:guid}", Name = "GetUser")]
+    public async Task<ActionResult<UserFullDto>> GetUser(Guid id) {
         // TODO: Move to user service?
         var user = await _userManager.FindByIdAsync(id.ToString());
 

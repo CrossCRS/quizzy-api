@@ -2,6 +2,6 @@
 
 namespace QuizzyAPI.Identity;
 
-public class QuizzyRole : IdentityRole<int> {
+public class QuizzyRole : IdentityRole<Guid> {
 
 }

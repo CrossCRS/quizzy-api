@@ -13,7 +13,7 @@ public class QuizRepository : IQuizRepository {
         _context = context;
     }
 
-    public async Task<Quiz?> GetById(int id) {
+    public async Task<Quiz?> GetById(Guid id) {
         return await _context.Quizzes
             .Include(q => q.Author)
             .Include(q => q.Questions)
@@ -32,7 +32,7 @@ public class QuizRepository : IQuizRepository {
         query = query
             .Include(q => q.Author)
             .Include(q => q.Questions)
-            .OrderBy(q => q.Id)
+            //.OrderBy(q => q.Id)
             .Skip(pageIndex * pageSize)
             .Take(pageSize);
 
@@ -49,7 +49,7 @@ public class QuizRepository : IQuizRepository {
         return await query.LongCountAsync();
     }
 
-    public async Task<bool> DeleteQuiz(int id) {
+    public async Task<bool> DeleteQuiz(Guid id) {
         var quiz = await _context.Quizzes
             .Where(q => q.Id == id)
             .FirstOrDefaultAsync();
@@ -64,7 +64,7 @@ public class QuizRepository : IQuizRepository {
         return true;
     }
 
-    public async Task<QuizResultDto?> GetResults(int id, AnswersRequestDto request) {
+    public async Task<QuizResultDto?> GetResults(Guid id, AnswersRequestDto request) {
         var quiz = await GetById(id);
 
         if (quiz == null) {

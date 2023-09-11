@@ -5,11 +5,11 @@ using QuizzyAPI.Models.Result;
 namespace QuizzyAPI.Repositories; 
 
 public interface IQuizRepository {
-    Task<Quiz?> GetById(int id);
+    Task<Quiz?> GetById(Guid id);
     Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize, int? authorId = null);
     Task<long> GetCount(int? authorId = null);
 
-    Task<bool> DeleteQuiz(int id);
+    Task<bool> DeleteQuiz(Guid id);
 
-    Task<QuizResultDto?> GetResults(int id, AnswersRequestDto answers);
+    Task<QuizResultDto?> GetResults(Guid id, AnswersRequestDto answers);
 }

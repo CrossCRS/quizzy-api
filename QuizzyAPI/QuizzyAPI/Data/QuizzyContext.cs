@@ -77,31 +77,31 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, int> {
 
         modelBuilder.Entity<Quiz>().HasData(
             new Quiz() {
-                Id = 1, Title = "Test Quiz", Description = "A test quiz", AuthorId = 1, HideAnswers = false
+                Id = Guid.Parse("048eeefd-2fcf-49b2-9b17-a040b67be06c"), Title = "Test Quiz", Description = "A test quiz", AuthorId = 1, HideAnswers = false
             },
             new Quiz() {
-                Id = 2, Title = "Test Quiz No Answers", Description = "A test quiz with hidden answers", AuthorId = 1, HideAnswers = true
+                Id = Guid.Parse("3d387bcf-3564-4fb3-8cc2-2e1e5a3a8e81"), Title = "Test Quiz No Answers", Description = "A test quiz with hidden answers", AuthorId = 1, HideAnswers = true
             });
 
         for (var i = 3; i < 53; i++) {
             modelBuilder.Entity<Quiz>().HasData(
                 new Quiz() {
-                    Id = i, Title = $"Empty Quiz #{i - 2}", Description = "An empty quiz", AuthorId = 2, HideAnswers = false
+                    Id = Guid.NewGuid(), Title = $"Empty Quiz #{i - 2}", Description = "An empty quiz", AuthorId = 2, HideAnswers = false
                 });
         }
 
         modelBuilder.Entity<Question>().HasData(
             new Question() {
-                Id = 1, QuizId = 1, Text = "Question number 1", Points = 1,
+                Id = 1, QuizId = Guid.Parse("048eeefd-2fcf-49b2-9b17-a040b67be06c"), Text = "Question number 1", Points = 1,
             },
             new Question() {
-                Id = 2, QuizId = 1, Text = "Question number 2", Points = 1,
+                Id = 2, QuizId = Guid.Parse("048eeefd-2fcf-49b2-9b17-a040b67be06c"), Text = "Question number 2", Points = 1,
             },
             new Question() {
-                Id = 3, QuizId = 1, Text = "Question number 3", Points = 1,
+                Id = 3, QuizId = Guid.Parse("048eeefd-2fcf-49b2-9b17-a040b67be06c"), Text = "Question number 3", Points = 1,
             },
             new Question() {
-                Id = 4, QuizId = 2, Text = "Quiz 2 Question", Points = 1,
+                Id = 4, QuizId = Guid.Parse("3d387bcf-3564-4fb3-8cc2-2e1e5a3a8e81"), Text = "Quiz 2 Question", Points = 1,
             });
 
         modelBuilder.Entity<Answer>().HasData(

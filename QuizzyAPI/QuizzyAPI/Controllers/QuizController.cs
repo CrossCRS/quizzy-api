@@ -48,8 +48,8 @@ public class QuizController : ControllerBase {
     }
     
     // GET: api/quizzes/{id}
-    [HttpGet("{id:int}", Name = "GetQuiz")]
-    public async Task<ActionResult<QuizFullDto>> GetQuiz([Range(1, int.MaxValue)] int id) {
+    [HttpGet("{id:guid}", Name = "GetQuiz")]
+    public async Task<ActionResult<QuizFullDto>> GetQuiz(Guid id) {
         var quiz = await _quizzes.GetById(id);
 
         if (quiz == null) {
@@ -60,9 +60,9 @@ public class QuizController : ControllerBase {
     }
     
     // DELETE: api/quizzes/{id}
-    [HttpDelete("{id:int}", Name = "DeleteQuiz")]
+    [HttpDelete("{id:guid}", Name = "DeleteQuiz")]
     [Authorize(Roles = Constants.Roles.ADMINISTRATOR)]
-    public async Task<ActionResult<bool>> DeleteQuiz([Range(1, int.MaxValue)] int id) {
+    public async Task<ActionResult<bool>> DeleteQuiz(Guid id) {
         // TODO: If Administrator OR owner
         var result = await _quizzes.DeleteQuiz(id);
 
@@ -72,8 +72,8 @@ public class QuizController : ControllerBase {
     
     // PUT api/quizzes/{id}/result
     // Send answers and get a result
-    [HttpPut("{id:int}/result", Name = "GetResults")]
-    public async Task<ActionResult<QuizResultDto>> GetResults([Range(1, int.MaxValue)] int id, AnswersRequestDto answers) {
+    [HttpPut("{id:guid}/result", Name = "GetResults")]
+    public async Task<ActionResult<QuizResultDto>> GetResults(Guid id, AnswersRequestDto answers) {
         var quiz = await _quizzes.GetById(id);
 
         if (quiz == null) {

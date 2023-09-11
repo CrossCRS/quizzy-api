@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuizzyAPI.Data;
 using QuizzyAPI.Entities;
+using QuizzyAPI.Identity;
 using QuizzyAPI.Models;
 using QuizzyAPI.Models.Result;
 
@@ -8,9 +10,11 @@ namespace QuizzyAPI.Repositories;
 
 public class QuizRepository : IQuizRepository {
     private readonly QuizzyContext _context;
+    private readonly UserManager<QuizzyUser> _userManager;
 
-    public QuizRepository(QuizzyContext context) {
+    public QuizRepository(QuizzyContext context, UserManager<QuizzyUser> userManager) {
         _context = context;
+        _userManager = userManager;
     }
 
     public async Task<Quiz?> GetById(Guid id) {
@@ -22,11 +26,14 @@ public class QuizRepository : IQuizRepository {
             .FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize, Guid? authorId = null) {
+    public async Task<IEnumerable<Quiz>> GetAll(int pageIndex, int pageSize, string? authorUsername = null) {
         IQueryable<Quiz> query = _context.Quizzes;
 
-        if (authorId != null) {
-            query = query.Where(q => q.AuthorId == authorId);
+        if (authorUsername != null) {
+            var user = await _userManager.FindByNameAsync(authorUsername);
+            
+            // TODO: null user handling?
+            query = query.Where(q => q.AuthorId == user.Id);
         }
 
         query = query
@@ -39,11 +46,14 @@ public class QuizRepository : IQuizRepository {
         return await query.ToListAsync();
     }
 
-    public async Task<long> GetCount(Guid? authorId = null) {
+    public async Task<long> GetCount(string? authorUsername = null) {
         IQueryable<Quiz> query = _context.Quizzes;
 
-        if (authorId != null) {
-            query = query.Where(q => q.AuthorId == authorId);
+        if (authorUsername != null) {
+            var user = await _userManager.FindByNameAsync(authorUsername);
+            
+            // TODO: null user handling?
+            query = query.Where(q => q.AuthorId == user.Id);
         }
 
         return await query.LongCountAsync();

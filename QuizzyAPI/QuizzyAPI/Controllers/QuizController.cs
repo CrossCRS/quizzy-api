@@ -24,9 +24,9 @@ public class QuizController : ControllerBase {
 
     // GET: api/quizzes
     [HttpGet(Name = "GetQuizzes")]
-    public async Task<ActionResult<PaginatedDto<QuizBriefDto>>> GetQuizzes([FromQuery, Range(0, int.MaxValue)] int pageIndex = 0, [FromQuery, Range(1, MaxPageSize)] int pageSize = 10, [FromQuery] Guid? authorId = null) {
-        var quizzes = await _quizzes.GetAll(pageIndex, pageSize, authorId);
-        var quizzesCount = await _quizzes.GetCount(authorId);
+    public async Task<ActionResult<PaginatedDto<QuizBriefDto>>> GetQuizzes([FromQuery, Range(0, int.MaxValue)] int pageIndex = 0, [FromQuery, Range(1, MaxPageSize)] int pageSize = 10, [FromQuery] string? authorUsername = null) {
+        var quizzes = await _quizzes.GetAll(pageIndex, pageSize, authorUsername);
+        var quizzesCount = await _quizzes.GetCount(authorUsername);
 
         var pageCount = (int)Math.Ceiling((double)quizzesCount / (double)pageSize);
 

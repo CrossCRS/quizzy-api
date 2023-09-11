@@ -23,11 +23,11 @@ public class UserController : ControllerBase {
         _mapper = mapper;
     }
     
-    // GET: api/users/{id}
-    [HttpGet("{id:guid}", Name = "GetUser")]
-    public async Task<ActionResult<UserFullDto>> GetUser(Guid id) {
+    // GET: api/users/{username}
+    [HttpGet("{username}", Name = "GetUser")]
+    public async Task<ActionResult<UserFullDto>> GetUser(string username) {
         // TODO: Move to user service?
-        var user = await _userManager.FindByIdAsync(id.ToString());
+        var user = await _userManager.FindByNameAsync(username);
 
         if (user == null) {
             return NotFound();
@@ -35,7 +35,7 @@ public class UserController : ControllerBase {
 
         var userDto = _mapper.Map<UserFullDto>(user);
         // TODO: AutoMapper for quiz counts
-        userDto.CreatedQuizzesCount = await _quizRepository.GetCount(user.Id);
+        userDto.CreatedQuizzesCount = await _quizRepository.GetCount(user.UserName);
 
         return Ok(userDto);
     }

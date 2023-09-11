@@ -87,20 +87,39 @@ public class QuizzyContext : IdentityDbContext<QuizzyUser, QuizzyRole, Guid> {
             .Property(q => q.Id)
             .ValueGeneratedOnAdd();
 
-        modelBuilder.Entity<Quiz>().HasData(
-            new Quiz() {
-                Id = Guid.Parse("048eeefd-2fcf-49b2-9b17-a040b67be06c"), Title = "Test Quiz", Description = "A test quiz", AuthorId = Guid.Parse("7fe77cdd-aef2-4a34-a93c-fe84e2eeecfa"), HideAnswers = false
-            },
-            new Quiz() {
-                Id = Guid.Parse("3d387bcf-3564-4fb3-8cc2-2e1e5a3a8e81"), Title = "Test Quiz No Answers", Description = "A test quiz with hidden answers", AuthorId = Guid.Parse("7fe77cdd-aef2-4a34-a93c-fe84e2eeecfa"), HideAnswers = true
-            });
-
+        modelBuilder.Entity<Quiz>()
+            .Property(q => q.CreatedAt)
+            .HasDefaultValueSql("now()"); // now() for Postgre
+        
         for (var i = 3; i < 53; i++) {
             modelBuilder.Entity<Quiz>().HasData(
                 new Quiz() {
-                    Id = Guid.NewGuid(), Title = $"Empty Quiz #{i - 2}", Description = "An empty quiz", AuthorId = Guid.Parse("b28706a2-c61f-4067-a3f2-03e0b967fb32"), HideAnswers = false
+                    Id = Guid.NewGuid(),
+                    Title = $"Empty Quiz #{i - 2}",
+                    Description = "An empty quiz",
+                    CreatedAt = DateTime.Now.AddHours(-i).ToUniversalTime(),
+                    AuthorId = Guid.Parse("b28706a2-c61f-4067-a3f2-03e0b967fb32"),
+                    HideAnswers = false
                 });
         }
+
+        modelBuilder.Entity<Quiz>().HasData(
+            new Quiz() {
+                Id = Guid.Parse("048eeefd-2fcf-49b2-9b17-a040b67be06c"),
+                Title = "Test Quiz",
+                Description = "A test quiz",
+                CreatedAt = DateTime.Now.ToUniversalTime(),
+                AuthorId = Guid.Parse("7fe77cdd-aef2-4a34-a93c-fe84e2eeecfa"),
+                HideAnswers = false
+            },
+            new Quiz() {
+                Id = Guid.Parse("3d387bcf-3564-4fb3-8cc2-2e1e5a3a8e81"),
+                Title = "Test Quiz No Answers",
+                Description = "A test quiz with hidden answers",
+                CreatedAt = DateTime.Now.AddHours(-1).ToUniversalTime(),
+                AuthorId = Guid.Parse("7fe77cdd-aef2-4a34-a93c-fe84e2eeecfa"),
+                HideAnswers = true
+            });
 
         modelBuilder.Entity<Question>().HasData(
             new Question() {

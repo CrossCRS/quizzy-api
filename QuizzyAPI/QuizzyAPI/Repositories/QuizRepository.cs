@@ -32,7 +32,7 @@ public class QuizRepository : IQuizRepository {
         query = query
             .Include(q => q.Author)
             .Include(q => q.Questions)
-            //.OrderBy(q => q.Id)
+            .OrderByDescending(q => q.CreatedAt)
             .Skip(pageIndex * pageSize)
             .Take(pageSize);
 

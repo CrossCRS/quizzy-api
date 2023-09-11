@@ -5,6 +5,7 @@ public class QuizFullDto {
 
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
     public UserBriefDto Author { get; set; } = null!;
 
     public IEnumerable<QuestionDto> Questions { get; set; } = null!;

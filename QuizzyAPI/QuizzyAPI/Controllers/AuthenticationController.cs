@@ -27,13 +27,19 @@ public class AuthenticationController : ControllerBase {
     public async Task<ActionResult<string>> Login([FromBody] LoginRequestDto request) {
         var response = new LoginResponseDto();
 
-        var result = await _signInManager.PasswordSignInAsync(request.Username, request.Password, false, false);
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user == null) {
+            response.Result = false;
+            return Ok(response);
+        }
+        
+        var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, false);
 
         response.Result = result.Succeeded;
-        response.Username = request.Username;
 
         if (result.Succeeded) {
-            response.Token = await _tokenService.GetTokenAsync(request.Username);
+            response.Username = user.UserName;
+            response.Token = await _tokenService.GetTokenAsync(user.UserName);
         }
 
         return Ok(response);
